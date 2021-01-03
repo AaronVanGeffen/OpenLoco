@@ -17,6 +17,7 @@ namespace OpenLoco::Map::TileManager
 
     void initialise();
     stdx::span<tile_element> getElements();
+    void setElements(stdx::span<tile_element> elements);
     tile_element* getElementsEnd();
     tile_element** getElementIndex();
     tile get(TilePos2 pos);
@@ -32,4 +33,7 @@ namespace OpenLoco::Map::TileManager
     void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(Map::Pos2 pos);
     void mapInvalidateMapSelectionTiles();
+    void resetSurfaceClearance();
+    void createAnimation(uint8_t type, coord_t x, coord_t y, tile_coord_t baseZ);
+    void registerHooks();
 }

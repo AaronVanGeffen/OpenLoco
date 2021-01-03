@@ -176,6 +176,11 @@ OpenLoco::Industry* industry_element::industry() const
     return IndustryManager::get(_industryId);
 }
 
+uint8_t industry_element::var_6_1F() const
+{
+    return (_6 >> 6) & 0x1F;
+}
+
 OpenLoco::StationType station_element::stationType() const { return OpenLoco::StationType(_5 >> 5); }
 
 namespace OpenLoco::Map
