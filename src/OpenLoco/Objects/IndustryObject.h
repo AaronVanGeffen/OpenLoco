@@ -51,6 +51,6 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
         void drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const;
     };
-    static_assert(sizeof(industry_object) == 0xF1);
+    static_assert(sizeof(IndustryObject) == 0xF1);
 #pragma pack(pop)
 }
