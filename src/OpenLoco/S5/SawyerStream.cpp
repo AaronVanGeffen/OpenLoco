@@ -160,40 +160,38 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
 
 bool SawyerStreamReader::validateChecksum()
 {
-    std::ifstream ja(_path, std::ios::in | std::ios::binary);
-    ja.exceptions(std::ifstream::failbit);
+    std::ifstream _stream(_path, std::ios::in | std::ios::binary);
 
-    std::stringstream _stream;
-    _stream.exceptions(std::ifstream::failbit);
-    _stream << ja.rdbuf();
-
-    auto valid = false;
-
-    _stream.seekg(0, std::ios::end);
-    auto fileLength = static_cast<uint32_t>(_stream.tellg());
-    if (fileLength >= 4)
+    bool valid = false;
+    uint32_t checksum, fileSize;
+    uint32_t actualChecksum = 0;
+    uint8_t buffer[2048];
+    std::streamsize readActual = 0;
+    do
     {
-        // Read checksum
-        uint32_t checksum;
-        _stream.seekg(fileLength - 4);
-        _stream.read(reinterpret_cast<char*>(&checksum), sizeof(checksum));
-
-        // Calculate checksum
-        uint32_t actualChecksum = 0;
-        _stream.seekg(0);
-        uint8_t buffer[2048];
-        for (uint32_t i = 0; i < fileLength - 4; i += sizeof(buffer))
+        _stream.read(reinterpret_cast<char*>(buffer), sizeof buffer);
+        fileSize += readActual = _stream.gcount();
+        for (std::streamsize j = 0; j < readActual; j++)
         {
-            auto readLength = std::min<size_t>(sizeof(buffer), fileLength - 4 - i);
-            _stream.read(reinterpret_cast<char*>(buffer), readLength);
-            for (size_t j = 0; j < readLength; j++)
-            {
-                actualChecksum += buffer[j];
-            }
+            actualChecksum += buffer[j];
         }
-
-        valid = checksum == actualChecksum;
     }
+    while(readActual == static_cast<std::streamsize>(sizeof buffer));
+
+    checksum = ((uint32_t)buffer[(readActual-1+sizeof buffer)%sizeof buffer]<<24) +
+               ((uint32_t)buffer[(readActual-2+sizeof buffer)%sizeof buffer]<<16) +
+               ((uint32_t)buffer[(readActual-3+sizeof buffer)%sizeof buffer]<< 8) +
+               ((uint32_t)buffer[(readActual-4+sizeof buffer)%sizeof buffer]);
+    actualChecksum -=
+               ((uint32_t)buffer[(readActual-1+sizeof buffer)%sizeof buffer]) +
+               ((uint32_t)buffer[(readActual-2+sizeof buffer)%sizeof buffer]) +
+               ((uint32_t)buffer[(readActual-3+sizeof buffer)%sizeof buffer]) +
+               ((uint32_t)buffer[(readActual-4+sizeof buffer)%sizeof buffer]);
+    //printf("size: %d\n", fileSize);
+    //printf("readcsum: %04x\n", checksum);
+    //printf("computed: %04x\n", actualChecksum);
+
+    valid = checksum == actualChecksum && fileSize >= 4;
 
     return valid;
 }
