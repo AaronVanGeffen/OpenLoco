@@ -158,15 +158,21 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
     _stream.read(reinterpret_cast<char*>(data), dataLen);
 }
 
+template <size_t N>
+static constexpr uint32_t byteOf(uint8_t (&buffer)[N], ptrdiff_t offset)
+{
+    return buffer[(offset + N) % N];
+}
+
 bool SawyerStreamReader::validateChecksum()
 {
     std::ifstream _stream(_path, std::ios::in | std::ios::binary);
 
-    bool valid = false;
     uint32_t checksum, fileSize;
-    uint32_t actualChecksum = 0;
     uint8_t buffer[2048];
-    std::streamsize readActual = 0;
+    std::streamsize readActual;
+
+    uint32_t actualChecksum = 0;
     do
     {
         _stream.read(reinterpret_cast<char*>(buffer), sizeof buffer);
@@ -175,23 +181,20 @@ bool SawyerStreamReader::validateChecksum()
         {
             actualChecksum += buffer[j];
         }
-    }
-    while(readActual == static_cast<std::streamsize>(sizeof buffer));
+    } while (readActual == static_cast<std::streamsize>(sizeof buffer));
 
-    checksum = ((uint32_t)buffer[(readActual-1+sizeof buffer)%sizeof buffer]<<24) +
-               ((uint32_t)buffer[(readActual-2+sizeof buffer)%sizeof buffer]<<16) +
-               ((uint32_t)buffer[(readActual-3+sizeof buffer)%sizeof buffer]<< 8) +
-               ((uint32_t)buffer[(readActual-4+sizeof buffer)%sizeof buffer]);
+    checksum = (byteOf(buffer, readActual - 1) << 24) +
+               (byteOf(buffer, readActual - 2) << 16) +
+               (byteOf(buffer, readActual - 3) <<  8) +
+               (byteOf(buffer, readActual - 4));
+
     actualChecksum -=
-               ((uint32_t)buffer[(readActual-1+sizeof buffer)%sizeof buffer]) +
-               ((uint32_t)buffer[(readActual-2+sizeof buffer)%sizeof buffer]) +
-               ((uint32_t)buffer[(readActual-3+sizeof buffer)%sizeof buffer]) +
-               ((uint32_t)buffer[(readActual-4+sizeof buffer)%sizeof buffer]);
-    //printf("size: %d\n", fileSize);
-    //printf("readcsum: %04x\n", checksum);
-    //printf("computed: %04x\n", actualChecksum);
+               byteOf(buffer, readActual - 1) +
+               byteOf(buffer, readActual - 2) +
+               byteOf(buffer, readActual - 3) +
+               byteOf(buffer, readActual - 4);
 
-    valid = checksum == actualChecksum && fileSize >= 4;
+    bool valid = checksum == actualChecksum && fileSize >= 4;
 
     return valid;
 }
