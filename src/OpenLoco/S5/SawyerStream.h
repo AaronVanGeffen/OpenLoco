@@ -52,6 +52,7 @@ namespace OpenLoco
     {
     private:
         std::ifstream _stream;
+        fs::path _path;
         FastBuffer _decodeBuffer;
         FastBuffer _decodeBuffer2;
 

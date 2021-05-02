@@ -5,6 +5,7 @@
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#include <sstream>
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -128,6 +129,7 @@ SawyerStreamReader::SawyerStreamReader(const fs::path& path)
 {
     _stream.exceptions(std::ifstream::failbit);
     _stream.open(path, std::ios::in | std::ios::binary);
+    _path = path;
 }
 
 stdx::span<uint8_t const> SawyerStreamReader::readChunk()
@@ -158,8 +160,14 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
 
 bool SawyerStreamReader::validateChecksum()
 {
+    std::ifstream ja(_path, std::ios::in | std::ios::binary);
+    ja.exceptions(std::ifstream::failbit);
+
+    std::stringstream _stream;
+    _stream.exceptions(std::ifstream::failbit);
+    _stream << ja.rdbuf();
+
     auto valid = false;
-    auto backupPos = _stream.tellg();
 
     _stream.seekg(0, std::ios::end);
     auto fileLength = static_cast<uint32_t>(_stream.tellg());
@@ -186,9 +194,6 @@ bool SawyerStreamReader::validateChecksum()
 
         valid = checksum == actualChecksum;
     }
-
-    // Restore position
-    _stream.seekg(backupPos);
 
     return valid;
 }
