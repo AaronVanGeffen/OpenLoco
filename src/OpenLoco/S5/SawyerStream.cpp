@@ -158,45 +158,25 @@ void SawyerStreamReader::read(void* data, size_t dataLen)
     _stream.read(reinterpret_cast<char*>(data), dataLen);
 }
 
-template <size_t N>
-static constexpr uint32_t byteOf(uint8_t (&buffer)[N], ptrdiff_t offset)
-{
-    return buffer[(offset + N) % N];
-}
-
 bool SawyerStreamReader::validateChecksum()
 {
-    std::ifstream _stream(_path, std::ios::in | std::ios::binary);
+    std::filebuf buf;
+    buf.open(_path, std::ios::in | std::ios::binary);
 
-    uint32_t checksum, fileSize;
-    uint8_t buffer[2048];
-    std::streamsize readActual;
-
+    uint32_t checksum = -1;
     uint32_t actualChecksum = 0;
-    do
+
+    for(int c; ((c=buf.sbumpc()) != EOF); )
     {
-        _stream.read(reinterpret_cast<char*>(buffer), sizeof buffer);
-        fileSize += readActual = _stream.gcount();
-        for (std::streamsize j = 0; j < readActual; j++)
-        {
-            actualChecksum += buffer[j];
-        }
-    } while (readActual == static_cast<std::streamsize>(sizeof buffer));
+        uint8_t byte = c;
+        actualChecksum += byte;
+        checksum = static_cast<uint32_t>(byte) << 24 | checksum >> 8;
+    }
 
-    checksum = (byteOf(buffer, readActual - 1) << 24) +
-               (byteOf(buffer, readActual - 2) << 16) +
-               (byteOf(buffer, readActual - 3) <<  8) +
-               (byteOf(buffer, readActual - 4));
+    // Correct bytes that should not be checksummed
+    actualChecksum -= (checksum & 0xFF) + (checksum>>8 & 0xFF) + (checksum>>16 & 0xFF) + (checksum>>24 & 0xFF);
 
-    actualChecksum -=
-               byteOf(buffer, readActual - 1) +
-               byteOf(buffer, readActual - 2) +
-               byteOf(buffer, readActual - 3) +
-               byteOf(buffer, readActual - 4);
-
-    bool valid = checksum == actualChecksum && fileSize >= 4;
-
-    return valid;
+    return checksum == actualChecksum;
 }
 
 void SawyerStreamReader::close()
