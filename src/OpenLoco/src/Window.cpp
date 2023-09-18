@@ -410,7 +410,7 @@ namespace OpenLoco::Ui
             if (widget->type != WidgetType::scrollview)
                 continue;
 
-            uint16_t scrollWidth = 0, scrollHeight = 0;
+            uint32_t scrollWidth = 0, scrollHeight = 0;
             this->callGetScrollSize(s, &scrollWidth, &scrollHeight);
 
             bool invalidate = false;
@@ -459,7 +459,7 @@ namespace OpenLoco::Ui
 
             this->scrollAreas[s].flags = ScrollFlags::none;
 
-            uint16_t scrollWidth = 0, scrollHeight = 0;
+            uint32_t scrollWidth = 0, scrollHeight = 0;
             this->callGetScrollSize(s, &scrollWidth, &scrollHeight);
             this->scrollAreas[s].contentOffsetX = 0;
             this->scrollAreas[s].contentWidth = scrollWidth + 1;
@@ -1081,7 +1081,7 @@ namespace OpenLoco::Ui
         eventHandlers->onDropdown(*this, widgetIndex, itemIndex);
     }
 
-    void Window::callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    void Window::callGetScrollSize(uint32_t scrollIndex, uint32_t& scrollWidth, uint32_t& scrollHeight)
     {
         if (eventHandlers->getScrollSize == nullptr)
             return;

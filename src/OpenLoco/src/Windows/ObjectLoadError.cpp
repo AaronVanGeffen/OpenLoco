@@ -232,9 +232,9 @@ namespace OpenLoco::Ui::Windows::ObjectLoadError
         }
     }
 
-    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window& window, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t& scrollWidth, uint32_t& scrollHeight)
     {
-        *scrollHeight = kRowHeight * window.rowCount;
+        scrollHeight = kRowHeight * window.rowCount;
     }
 
     static void onMouseUp(Ui::Window& window, WidgetIndex_t widgetIndex)

@@ -1285,9 +1285,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize([[maybe_unused]] Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t& scrollWidth, uint32_t& scrollHeight)
     {
-        *scrollHeight = _numVisibleObjectsListed * kRowHeight;
+        scrollHeight = _numVisibleObjectsListed * kRowHeight;
     }
 
     // 0x00473900

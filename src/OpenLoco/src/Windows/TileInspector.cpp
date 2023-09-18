@@ -475,15 +475,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void getScrollSize(Ui::Window& self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::Window& self, uint32_t, uint32_t&, uint32_t& const scrollHeight)
     {
         if (_currentPosition == TilePos2(0, 0))
         {
-            *scrollHeight = 0;
+            scrollHeight = 0;
             return;
         }
 
-        *scrollHeight = self.rowCount * self.rowHeight;
+        scrollHeight = self.rowCount * self.rowHeight;
     }
 
     static void onToolUpdate([[maybe_unused]] Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)

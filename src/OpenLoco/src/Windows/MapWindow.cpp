@@ -377,11 +377,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9E7
-    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, uint32_t& scrollWidth, uint32_t& scrollHeight)
     {
         self.callPrepareDraw();
-        *scrollWidth = kMapColumns * 2;
-        *scrollHeight = kMapRows * 2;
+        scrollWidth = kMapColumns * 2;
+        scrollHeight = kMapRows * 2;
     }
 
     // 0x0046B9D4

@@ -1267,9 +1267,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x4B38FA
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint32_t& width, uint32_t& height)
         {
-            *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
+            height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
 
         // 0x004B3B54
@@ -2106,9 +2106,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4360
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint32_t& const width, uint32_t& const height)
         {
-            *height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
+            height = static_cast<uint16_t>(Common::getNumCars(&self) * self.rowHeight);
         }
 
         static char* generateCargoTooltipDetails(char* buffer, const StringId cargoFormat, const uint8_t cargoType, const uint8_t maxCargo, const uint32_t acceptedCargoTypes)
@@ -2946,7 +2946,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4D9B
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] const uint32_t scrollIndex, [[maybe_unused]] uint32_t& const width, uint32_t& const height)
         {
             auto head = Common::getVehicle(&self);
             if (head == nullptr)
@@ -2954,10 +2954,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
             auto table = getOrderTable(head);
-            *height = lineHeight * std::distance(table.begin(), table.end());
+            height = lineHeight * std::distance(table.begin(), table.end());
 
             // Space for the 'end of orders' item
-            *height += lineHeight;
+            height += lineHeight;
         }
 
         static void scrollMouseDown(Window& self, [[maybe_unused]] const int16_t x, const int16_t y, [[maybe_unused]] const uint8_t scrollIndex)

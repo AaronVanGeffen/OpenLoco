@@ -445,17 +445,17 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB64
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t& scrollWidth, uint32_t& scrollHeight)
         {
             auto station = StationManager::get(StationId(self.number));
-            *scrollHeight = 0;
+            scrollHeight = 0;
             for (const auto& cargoStats : station->cargoStats)
             {
                 if (cargoStats.quantity != 0)
                 {
-                    *scrollHeight += 12;
+                    scrollHeight += 12;
                     if (cargoStats.origin != StationId(self.number))
-                        *scrollHeight += 10;
+                        scrollHeight += 10;
                 }
             }
         }
@@ -646,14 +646,14 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE4A
-        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t& scrollWidth, uint32_t& scrollHeight)
         {
             auto station = StationManager::get(StationId(self.number));
-            *scrollHeight = 0;
+            scrollHeight = 0;
             for (uint8_t i = 0; i < 32; i++)
             {
                 if (station->cargoStats[i].origin != StationId::null)
-                    *scrollHeight += 10;
+                    scrollHeight += 10;
             }
         }
 

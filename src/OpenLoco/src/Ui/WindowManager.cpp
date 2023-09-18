@@ -1463,7 +1463,7 @@ namespace OpenLoco::Ui::WindowManager
 
         if (window.scrollAreas[scrollIndex].hasFlags(ScrollFlags::vscrollbarVisible))
         {
-            int size = widget->bottom - widget->top - 1;
+            uint32_t size = widget->bottom - widget->top - 1;
             if (scroll->hasFlags(ScrollFlags::hscrollbarVisible))
                 size -= 11;
             size = std::max(0, scroll->contentHeight - size);
@@ -1471,7 +1471,7 @@ namespace OpenLoco::Ui::WindowManager
         }
         else if (window.scrollAreas[scrollIndex].hasFlags(ScrollFlags::hscrollbarVisible))
         {
-            int size = widget->right - widget->left - 1;
+            uint32_t size = widget->right - widget->left - 1;
             if (scroll->hasFlags(ScrollFlags::vscrollbarVisible))
                 size -= 11;
             size = std::max(0, scroll->contentWidth - size);

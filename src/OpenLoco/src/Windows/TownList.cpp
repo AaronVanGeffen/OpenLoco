@@ -458,9 +458,9 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A4FA
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t& scrollWidth, uint32_t& scrollHeight)
         {
-            *scrollHeight = kRowHeight * self.var_83C;
+            scrollHeight = kRowHeight * self.var_83C;
         }
 
         // 0x00491841
@@ -940,7 +940,7 @@ namespace OpenLoco::Ui::Windows::TownList
                             self.savedView.mapX += 1;
                             if (self.savedView.mapX >= 8)
                             {
-                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500);
+                                auto y = std::min(self.scrollAreas[0].contentHeight - 1 + 60, 500U);
                                 if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
@@ -1188,12 +1188,12 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AE83
-        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::Window& self, [[maybe_unused]] uint32_t scrollIndex, [[maybe_unused]] uint32_t& scrollWidth, uint32_t& scrollHeight)
         {
-            *scrollHeight = (4 + self.var_83C) / 5;
-            if (*scrollHeight == 0)
-                *scrollHeight += 1;
-            *scrollHeight *= kRowHeight;
+            scrollHeight = (4 + self.var_83C) / 5;
+            if (scrollHeight == 0)
+                scrollHeight += 1;
+            scrollHeight *= kRowHeight;
         }
 
         // 0x0049ABBB
